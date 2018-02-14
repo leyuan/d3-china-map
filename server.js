@@ -15,10 +15,7 @@ router.get('/', function(req, res) {
 });
 
 app.use('/api', router);
-
-app.get('/', function(req, res) {
-    res.sendfile('public/index.html');
-});
+app.use(express.static('public'));
 
 app.listen(port);
 console.log('Magic happens on port ' + port);
