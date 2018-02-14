@@ -1,4 +1,4 @@
-// DATA 
+// DATA
 // parse data properly
 var umap = []
 data.map(function(d) {umap[d[0]]=Number(d[1])});
@@ -9,12 +9,12 @@ var v = Object.keys(umap).map(function(k){return umap[k]})
 
 // LOAD DATA
 queue()
-    .defer(d3.json, "maps/zh-mainland-provinces.topo.json") // mainland
-    .defer(d3.json, "maps/zh-chn-twn.topo.json") // taiwan 
-    .defer(d3.json, "maps/zh-hkg-mac.topo.json") // hk and macau
+    .defer(d3.json, "./maps/zh-mainland-provinces.topo.json") // mainland
+    .defer(d3.json, "./maps/zh-chn-twn.topo.json") // taiwan
+    .defer(d3.json, "./maps/zh-hkg-mac.topo.json") // hk and macau
     .await(drawMap); // function that uses files
 
-// DRAW 
+// DRAW
 // create SVG map
 var projection = d3.geo.mercator()
     .center([116,39])
@@ -37,7 +37,7 @@ var colorScale = d3.scale.linear()
            .range(["white", "lightgrey"]);
 
 // add grey color if no values
-var color = function(i){ 
+var color = function(i){
     if (i==undefined) {return "#cccccc"}
     else return colorScale(i)
 }
@@ -64,13 +64,13 @@ svg.select('.info')
     .append("g")
     .attr("class", "title")
     .append("text")
-    // .attr("dx", function(d){return 35})          
+    // .attr("dx", function(d){return 35})
     .attr("transform", "translate(0,-70)")
     .attr("dy", function(d){return 16})
-    .attr("text-anchor", "middle")  
+    .attr("text-anchor", "middle")
     .attr("font-family", "sans-serif")
     .attr("fill", "#4B4B4B")
-    .style("text-decoration", "bold")  
+    .style("text-decoration", "bold")
     .text(title)
     .attr("font-size", 16)
     .call(wrap, 150);
@@ -79,9 +79,9 @@ svg.select('.info')
     .append("g")
     .attr("class","legend")
     .append("text")
-    .attr("dx", function(d){return 0})          
+    .attr("dx", function(d){return 0})
     .attr("dy", 12 )
-    .attr("text-anchor", "middle")  
+    .attr("text-anchor", "middle")
     .attr("font-family", "sans-serif")
     .attr("fill", "#aaaaaa")
     .attr("font-size", 12)
@@ -93,9 +93,9 @@ svg.select('.info')
     .attr("class","credits")
     .attr("transform", "translate(0,140)")
     .append("text")
-    .attr("dx", function(d){return 0})          
+    .attr("dx", function(d){return 0})
     .attr("dy", 9 )
-    .attr("text-anchor", "middle")  
+    .attr("text-anchor", "middle")
     .attr("font-family", "sans-serif")
     .attr("fill", "#aaaaaa")
     .attr("font-size", 11)
@@ -133,9 +133,9 @@ svg.select('.caption')
     .attr("class","units")
     .attr("transform", "translate("+(width-35)+","+(height/2-20)+")")
     .append("text")
-    .attr("dx", function(d){return 0})          
+    .attr("dx", function(d){return 0})
     .attr("dy", 9 )
-    .attr("text-anchor", "middle")  
+    .attr("text-anchor", "middle")
     .attr("font-family", "sans-serif")
     .attr("fill", "#4b4b4b")
     .attr("font-size", 10)
@@ -152,11 +152,11 @@ function drawMap(error,mainland,taiwan,hkmacau) {
 
 // Mainland provinces
 function drawProvinces(error, cn) {
-    
+
     // var codes=[];
     // for (var i = 0; i < topojson.feature(cn, cn.objects.provinces).features.length; i++) {
     //     codes.push(topojson.feature(cn, cn.objects.provinces).features[i].properties.name)
-        
+
     // };
     // console.log(codes);
 
@@ -202,10 +202,10 @@ function drawTaiwan(error, cn) {
 // HK and Macau
 function drawHkMacau(error, cn) {
     // console.log(error)
-    
+
     // console.log(topojson.feature(cn, cn.objects.layer1).features.filter(function(d) { return d.properties.GU_A3 === "HKG" }))
 
-    
+
 
 
     var projection2 = d3.geo.mercator()
@@ -214,7 +214,7 @@ function drawHkMacau(error, cn) {
 
     var path2 = d3.geo.path()
         .projection(projection2);
-  
+
     svg.select('.map')
         .append("g")
         .attr("class", "hk")
@@ -248,7 +248,7 @@ function drawHkMacau(error, cn) {
          .attr("y2", 20)
          .style("stroke", "#cccccc")
          .style("stroke-width", 3);
-    
+
     svg.select(".hk")
         .append("svg:line")
          .attr("x1", 150)
