@@ -67,17 +67,8 @@
     <script>
         $(document).keyup(function(e) {
             if (e.keyCode == 27) { // esc pressed
-                var isVisible = $("#baguazhen:visible").length;
-                console.log('====================================');
                 console.log('esc pressed');
-                console.log(isVisible);
-                console.log('====================================');
-
-                if (isVisible) {
-                    $("#baguazhen").hide();
-                } else {
-                    $("#baguazhen").show();
-                }
+                $("#baguazhen").toggle();
             }
         });
     </script>
