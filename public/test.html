@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Group 5 - MM802 Mini Project</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            float: left;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+        #baguazhen {
+            display: block;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            z-index: 2;
+        }
+        #map {
+            display: inline-block;
+            height: 100vh;
+            width: 100%;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="baguazhen" style="height: 100vh"></div>
+    <div id="map"></div>
+
+    <script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLg0cOyioggM7H2rlPNsyf_y_eENk1Ct0&libraries=places">
+    </script>
+
+
+    <script type="text/javascript" src="./jquery.js"></script>
+    <script type="text/javascript" src="./echarts.js"></script>
+
+    <script>
+      var dom = document.getElementById("baguazhen");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+var colors = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57', '#9A2555'];
+var bgColor = 'rgba(46, 39, 51, 0.75)';
+
+var itemStyle = {
+    star5: {
+        color: colors[0]
+    },
+    star4: {
+        color: colors[1]
+    },
+    star3: {
+        color: colors[2]
+    },
+    star2: {
+        color: colors[3]
+    }
+};
+
+var data = [{
+    name: 'GO BACK',
+    itemStyle: {
+        color: colors[2]
+    },
+    children:[{
+        name: 'Japanese',
+        children: [{
+            name: '☆☆☆☆☆',
+            children: [{
+                name: ''
+            }]
+        }, {
+            name: '☆☆☆☆',
+            children: [{
+                name: ''
+            }]
+        }, {
+            name: '☆☆☆☆☆',
+            children: [{
+                name: ''
+            }]
+        }, {
+            name: '☆☆☆☆',
+            children: [{
+                name: ''
+            }]
+        }, {
+            name: '☆☆☆☆☆',
+            children: [{
+                name: ''
+            }]
+        }, {
+            name: '☆☆☆☆',
+            children: [{
+                name: ''
+            }]
+        }, {
+            name: '☆☆☆',
+            children: [{
+                name: ''
+            }]
+        }, {
+            name: '☆☆☆☆',
+            children: [{
+                name: ''
+            }]
+        }, {
+            name: '☆☆☆',
+            children: [{
+                name: ''
+            }]
+        }, {
+            name: '☆☆☆',
+            children: [{
+                name: ''
+            }]
+        }, {
+            name: '☆☆☆',
+            children: [{
+                name: ''
+            }]
+        }]
+    }]
+}];
+
+
+
+        var map;
+        var service;
+        var markers;
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(initMap);
+            } else {
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function callback(results, status) {
+
+
+            console.log(results);
+          var names  = [];
+          var ratings = [];
+            if (status == google.maps.places.PlacesServiceStatus.OK)
+            {
+                for (var i = 0, place; place = results[i]; i++)
+                {
+                    var lat = place.geometry.location.lat();
+                    var lng = place.geometry.location.lng();
+
+                    new google.maps.Marker({
+                        position: {lat: lat, lng: lng},
+                        map: map
+                    });
+                  names.push(place.name);
+                  ratings.push(place.rating);
+                }
+
+              for (var j = 0; j < data[0].children[0].children.length; ++j)
+              {
+                data[0].children[0].children[j].name = ratings[j].toString().concat(' ☆');
+                data[0].children[0].children[j].children[0].name = names[j];
+              }
+
+
+              myChart.setOption(option, true); // repaint??
+            }
+        }
+
+        function initMap(position) {
+            var location = {lat: 53.5232189, lng: -113.5285073}; // u of a
+            if (position) {
+                location = {lat: position.coords.latitude, lng: position.coords.longitude};
+            }
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: location
+            });
+
+            var marker = new google.maps.Marker({
+                position: location,
+                map: map
+            });
+
+            var nearBySearchReq = {
+                location: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+                radius: '500',
+                type: ['restaurant'],
+                keyword: ['japanese']
+            };
+
+            var textSearchReq = {
+                location: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+                radius: '500',
+                query: 'japanese',
+                type: ['restaurant'],
+            };
+
+            service = new google.maps.places.PlacesService(map);
+            // service.nearbySearch(nearBySearchReq, callback);
+            service.textSearch(textSearchReq, callback);
+        }
+
+        getLocation();
+
+        $(document).keyup(function(e) {
+            if (e.keyCode == 27) { // esc pressed
+                console.log('esc pressed');
+                $("#baguazhen").toggle();
+            }
+        });
+
+
+
+for (var j = 0; j < data.length; ++j) {
+    var level1 = data[j].children;
+    for (var i = 0; i < level1.length; ++i) {
+        var block = level1[i].children;
+        var bookScore = [];
+        var bookScoreId;
+        for (var star = 0; star < block.length; ++star) {
+            var style = (function (name) {
+                switch (name) {
+                    case '☆☆☆☆☆':
+                        bookScoreId = 0;
+                        return itemStyle.star5;
+                    case '☆☆☆☆':
+                        bookScoreId = 1;
+                        return itemStyle.star4;
+                    case '☆☆☆':
+                        bookScoreId = 2;
+                        return itemStyle.star3;
+                    case '☆☆':
+                        bookScoreId = 3;
+                        return itemStyle.star2;
+                }
+            })(block[star].name);
+
+            block[star].label = {
+                color: style.color,
+                downplay: {
+                    opacity: 0.5
+                }
+            };
+
+            if (block[star].children) {
+                style = {
+                    opacity: 1,
+                    color: style.color
+                };
+                block[star].children.forEach(function (book) {
+                    book.value = 1;
+                    book.itemStyle = style;
+
+                    book.label = {
+                        color: style.color
+                    };
+
+                    var value = 1;
+                    if (bookScoreId === 0 || bookScoreId === 3) {
+                        value = 5;
+                    }
+
+                    if (bookScore[bookScoreId]) {
+                        bookScore[bookScoreId].value += value;
+                    }
+                    else {
+                        bookScore[bookScoreId] = {
+                            color: colors[bookScoreId],
+                            value: value
+                        };
+                    }
+                });
+            }
+        }
+
+        level1[i].itemStyle = {
+            color: data[j].itemStyle.color
+        };
+    }
+}
+
+
+
+option = {
+    backgroundColor: bgColor,
+    color: colors,
+    series: [{
+        type: 'sunburst',
+        center: ['50%', '48%'],
+        data: data,
+        sort: function (a, b) {
+            if (a.depth === 1) {
+                return b.getValue() - a.getValue();
+            }
+            else {
+                return a.dataIndex - b.dataIndex;
+            }
+        },
+        label: {
+            rotate: 'radial',
+            color: bgColor
+        },
+        itemStyle: {
+            borderColor: bgColor,
+            borderWidth: 2
+        },
+        levels: [{}, {
+            r0: 0,
+            r: 40,
+            label: {
+                rotate: 0
+            }
+        }, {
+            r0: 40,
+            r: 105
+        }, {
+            r0: 115,
+            r: 140,
+            itemStyle: {
+                shadowBlur: 2,
+                shadowColor: colors[2],
+                color: 'transparent'
+            },
+            label: {
+                rotate: 'tangential',
+                fontSize: 10,
+                color: colors[0]
+            }
+        }, {
+            r0: 140,
+            r: 145,
+            itemStyle: {
+                shadowBlur: 80,
+                shadowColor: colors[0]
+            },
+            label: {
+                position: 'outside',
+                textShadowBlur: 5,
+                textShadowColor: '#333',
+            },
+            downplay: {
+                label: {
+                    opacity: 0.5
+                }
+            }
+        }]
+    }]
+};
+;
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+
+
+    </script>
+  </body>
+</html>
