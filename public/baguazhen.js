@@ -1,5 +1,5 @@
-var dom = document.getElementById("baguazhen");
-var myChart = echarts.init(dom);
+var baguazhen = document.getElementById("baguazhen");
+var myChart = echarts.init(baguazhen);
 var app = {};
 option = null;
 var colors = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57', '#9A2555'];
@@ -332,7 +332,7 @@ option = {
         }]
     }]
 };
-;
+
 if (option && typeof option === "object") {
     myChart.setOption(option, true);
 }
