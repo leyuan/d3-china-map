@@ -62,7 +62,6 @@ var myChart = echarts.init(dom);
 var app = {};
 option = null;
 
-
 // data[0] is designed to be the GoBack button.
 function updateColor() {
 var category = data[0].children;
@@ -209,16 +208,16 @@ function getLocation()
   }
 }
 
-function callback(results, status)
+function callback(cate, results, status)
 {
   //console.log(results);
   if (status == google.maps.places.PlacesServiceStatus.OK)
   {
-    var names  = []; // Store restaurant names for each category.
-    var ratings = []; // Store restaurant ratings for each category.
+    var names  = [];
+    var ratings = [];
     var photos = [];
 
-    for (var i = 0, place; place = results[i]; i++)
+    for (var i = 0, place; place = results[i]; i++) // try to show info in pop window
     {
       var marker = new google.maps.Marker({position: place.geometry.location, map: map});
       var infowindow = new google.maps.InfoWindow();
@@ -239,17 +238,17 @@ function callback(results, status)
           + 'Place ID: ' + place.place_id + '<br>'+ place.formatted_address + '</div>');
                       infowindow.open(map, this);});
     }
-    //console.log(photos);
 
-    for (var j = 0; j < maxRestaurantsToDisplay; j++) // Update json data.
-    {
-      data[0].children[updateIndex].children[j].name = String(ratings[j]).concat("");
-      //data[0].children[updateIndex].children[j].link = photos[j]; //失败了
-      // Too Messy with stars displayed.
-      //data[0].children[updateIndex].children[j].name = String(ratings[j]).concat(" ☆");
-      data[0].children[updateIndex].children[j].children[0].name = names[j];
-    }
-    //console.log(updateIndex);
+
+    data[0].children.map(child => {
+      if (child.name == cate) {
+        for (var j = 0; j < maxRestaurantsToDisplay; j++) {
+          child.children[j].name = String(ratings[j]).concat(""); //rating
+          child.children[j].children[0].name = names[j]; // name
+        }
+      }
+    });
+
     updateIndex = updateIndex + 1;
 
     if (option && typeof option === "object")
@@ -285,9 +284,10 @@ function initMap(position)
         };
 
     service = new google.maps.places.PlacesService(map);
-    service.textSearch(textSearchReq, callback);
+    service.textSearch(textSearchReq, callback.bind(this, categories[i]));
     //$(document).click(function(e){console.log(window.node);});
-}}
+  }
+}
 
 getLocation();
 
