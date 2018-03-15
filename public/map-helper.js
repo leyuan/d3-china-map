@@ -52,44 +52,61 @@ function showPlaces(node)
         places[cate].map(place => {
             addMarker(place.marker)
         });
-    } else if (places.hasOwnProperty(node.parentNode.name)) { // => node is rating
-        var rate = parseFloat(node.name);
+    } else if (places.hasOwnProperty(node.parentNode.name)) { // => node is rating bucket
+        var bucket = node.name;
         var cateName = node.parentNode.name;
-        var infowindow = new google.maps.InfoWindow();
 
         places[cateName].map(place => {
-            if (place.rating === rate) {
-                service.getDetails({
-                    placeId: place.place_id
-                }, function (place, status) {
-                    if (status === google.maps.places.PlacesServiceStatus.OK) {
-                        var marker = new google.maps.Marker({
-                            map: map,
-                            position: place.geometry.location
-                        });
-                      console.log(place.geometry.location);
-                        google.maps.event.addListener(marker, 'click', function () {
-                            infowindow.setContent('<div><strong>' + place.name + '</strong><br><br>' +
-                                //'Place ID: ' + place.place_id + '<br>' +
-                                '<img src=' + place.icon + '>' + '<br>' +
-                                'Opening Now:&nbsp' + place.opening_hours.open_now + '<br>' +
-                                'Phone Number:&nbsp' + place.formatted_phone_number + '<br>' +
-                                'Address:&nbsp' + place.formatted_address + '<br>' +
-                                //'Website:&nbsp' + place.website +
-                                                  '</div>');
-                            infowindow.open(map, this);
-                        });
+            if (place.ratingBucket === bucket) {
+                addMarkerAndNavTo(place);
+            }
+        });
+    } else { // => node is single restaurant
+        var name = node.name;
+        var cateName = node.parentNode.parentNode.name;
 
-                      google.maps.event.addListener(marker, "dblclick", function (e) {
-
-                        getDirection(place.geometry.location);
-                        console.log("Double Clicked??");
-            });
-                    }
-                });
+        places[cateName].map(place => {
+            if (place.name === name) {
+                addMarkerAndNavTo(place);
             }
         });
     }
+}
+
+function addMarkerAndNavTo(place) {
+    removeMarker();
+
+    var infowindow = new google.maps.InfoWindow();
+
+    service.getDetails({
+        placeId: place.place_id
+    }, function (place, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            var marker = new google.maps.Marker({
+                map: map,
+                position: place.geometry.location
+            });
+
+            markers.push(marker);
+
+            google.maps.event.addListener(marker, 'click', function () {
+                infowindow.setContent('<div><strong>' + place.name + '</strong><br><br>' +
+                    //'Place ID: ' + place.place_id + '<br>' +
+                    '<img src=' + place.icon + '>' + '<br>' +
+                    'Opening Now:&nbsp' + place.opening_hours.open_now + '<br>' +
+                    'Phone Number:&nbsp' + place.formatted_phone_number + '<br>' +
+                    'Address:&nbsp' + place.formatted_address + '<br>' +
+                    //'Website:&nbsp' + place.website +
+                                      '</div>');
+                infowindow.open(map, this);
+            });
+
+            google.maps.event.addListener(marker, "dblclick", function (e) {
+                getDirection(place.geometry.location);
+                console.log("Double Clicked??");
+            });
+        }
+    });
 }
 
 function convertRatingtoBucket (rating) {
@@ -116,10 +133,14 @@ function callback(cate, results, status) {
         results.map(place => {
             names.push(place.name);
             ratings.push(place.rating);
+            ratingBucket = convertRatingtoBucket(place.rating);
+
             place.marker = {
                 position: place.geometry.location,
-                map: map
+                map: map,
             };
+
+            place.ratingBucket = ratingBucket;
 
             if (Array.isArray(places[cate])) {
                 places[cate].push(place);
@@ -130,21 +151,23 @@ function callback(cate, results, status) {
 
         // render charts
         data[0].children.map(child => {
+            var maxDisplay = 20;
+
             if (child.name == cate) {
-                for (var j = 0; j < 15; j++) {
+                for (var j = 0; j < maxDisplay; j++) {
                     var rating = String(ratings[j]).concat("");
                     var name = names[j];
                     var bucket = convertRatingtoBucket(parseFloat(rating));
 
                     var currentBucket = child.children.find(child => child.name == bucket);
 
-                    if (!currentBucket) {
+                    if (!currentBucket) { // need to create new bucket
                         var item = {
-                            name:  bucket,
+                            name: bucket,
                             children: [{name: name}],
                         };
                         child.children.push(item);
-                    } else {
+                    } else { // push to existing bucket
                         currentBucket.children.push({name: name});
                     }
                 }
