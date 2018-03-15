@@ -78,6 +78,7 @@ function showPlaces(node)
                         });
 
                       google.maps.event.addListener(marker, "dblclick", function (e) {
+
                         getDirection(place.geometry.location);
                         console.log("Double Clicked??");
             });
@@ -166,7 +167,9 @@ function getDirection(destination)
   var directionsService = new google.maps.DirectionsService();
   var directionsDisplay = new google.maps.DirectionsRenderer();
 
+  //directionDisplay.setMap(null);
   directionsDisplay.setMap(map);
+  directionsDisplay.setPanel(document.getElementById('panel'));
 
   var request = {
     origin: currentLocation,
@@ -177,3 +180,4 @@ function getDirection(destination)
     if (status == google.maps.DirectionsStatus.OK) {
       directionsDisplay.setDirections(response);}});
 }
+
