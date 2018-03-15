@@ -81,6 +81,7 @@ function callback(cate, results, status) {
         var ratings = [];
         var photos = [];
 
+        // save markers and places
         results.map(place => {
             names.push(place.name);
             ratings.push(place.rating);
@@ -96,12 +97,10 @@ function callback(cate, results, status) {
             }
         });
 
+        // render charts
         data[0].children.map(child => {
             if (child.name == cate) {
-
                 for (var j = 0; j < maxRestaurantsToDisplay; j++) {
-                    // child.children[j].name = String(ratings[j]).concat(""); //rating
-                    // child.children[j].children[0].name = names[j]; // name
                     var item = {
                         name:  String(ratings[j]).concat(""),
                         children: [{name: names[j]}],
@@ -112,8 +111,9 @@ function callback(cate, results, status) {
         });
 
         if (option && typeof option === "object") {
+            updateChartData(data);
+            updateColor();
             myChart.setOption(option, true);
-            updateColor(); // Update the chart.
         }
     }
 }
@@ -151,4 +151,8 @@ function initMap(position) {
         service = new google.maps.places.PlacesService(map);
         service.textSearch(textSearchReq, callback.bind(this, categories[i]));
     }
+}
+
+function updateChartData(newData) {
+    option.series.data = newData;
 }

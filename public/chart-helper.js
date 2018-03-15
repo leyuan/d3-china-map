@@ -2,7 +2,7 @@ var bgColor = 'rgba(46, 39, 51, 0.75)';
 var colors = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57'];
 var maxRestaurantsToDisplay = 10; // 什么鬼名字
 // var categories = ["Japanese", "Chinese", "Canadian", "Thai", "Pizza", "Vegetarian", "Italian", "coffee"];
-var categories = ["Japanese", "Chinese", "Cafe"];
+var categories = ["Japanese", "Chinese", "Italian"];
 var data = [{
     name: '',
     itemStyle: {
@@ -193,9 +193,5 @@ option = {
             }
         }]
     }]
-};;
-if (option && typeof option === "object") {
-    updateColor();
-    myChart.setOption(option, true);
-    updateColor();
-}
+};
+
