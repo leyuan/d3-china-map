@@ -17,7 +17,7 @@
             height: 100%;
             width: 100%;
             top: 0;
-            z-index: 3;
+            z-index: 2;
         }
 
         #map {
@@ -28,16 +28,18 @@
 
         #panel {
             position: absolute;
-            z-index: 2;
+            z-index: 1;
+            top: 50px;
             right: 10px;
             width: 300px;
+            background: white;
         }
     </style>
 </head>
 
 <body>
     <div id="baguazhen"></div>
-    <div id="panel" style="width: 300px; float: right;"></div>
+    <div id="panel"></div>
     <div id="map"></div>
 
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6jRWOLZKKqcc48H_KnvxWrtMkzRVGnMI&libraries=places">
