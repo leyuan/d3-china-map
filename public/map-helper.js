@@ -98,9 +98,15 @@ function callback(cate, results, status) {
 
         data[0].children.map(child => {
             if (child.name == cate) {
+
                 for (var j = 0; j < maxRestaurantsToDisplay; j++) {
-                    child.children[j].name = String(ratings[j]).concat(""); //rating
-                    child.children[j].children[0].name = names[j]; // name
+                    // child.children[j].name = String(ratings[j]).concat(""); //rating
+                    // child.children[j].children[0].name = names[j]; // name
+                    var item = {
+                        name:  String(ratings[j]).concat(""),
+                        children: [{name: names[j]}],
+                    };
+                    child.children.push(item);
                 }
             }
         });
