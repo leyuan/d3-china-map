@@ -5,6 +5,9 @@ var markers = [];
 var infowindow;
 var currentLocation;
 
+// 0 - 2.9 // 3 - 3.4 // 3.5 - 3.9 // 4 - 4.4 // 4.5 - 4.9 // 5.0 //
+var ratingBuckets = [2.9, 3.4, 3.9, 4.4, 4.9]
+
 google.maps.Map.prototype.clearMarkers = function() {
     for(var i=0; i < this.markers.length; i++){
         this.markers[i].setMap(null);
@@ -89,6 +92,20 @@ function showPlaces(node)
     }
 }
 
+function convertRatingtoBucket (rating) {
+    if (isNaN(rating)) {
+        console.error('rating is not a number');
+    }
+
+    if (rating < 3) {
+        return '3';
+    } else if (rating >= 3 && rating <= 4) {
+        return '3 - 4';
+    } else if (rating > 4 && rating <= 5) {
+        return '4 - 5';
+    }
+}
+
 function callback(cate, results, status) {
     if (status == google.maps.places.PlacesServiceStatus.OK) {
         var names = [];
@@ -114,12 +131,22 @@ function callback(cate, results, status) {
         // render charts
         data[0].children.map(child => {
             if (child.name == cate) {
-                for (var j = 0; j < maxRestaurantsToDisplay; j++) {
-                    var item = {
-                        name:  String(ratings[j]).concat(""),
-                        children: [{name: names[j]}],
-                    };
-                    child.children.push(item);
+                for (var j = 0; j < 15; j++) {
+                    var rating = String(ratings[j]).concat("");
+                    var name = names[j];
+                    var bucket = convertRatingtoBucket(parseFloat(rating));
+
+                    var currentBucket = child.children.find(child => child.name == bucket);
+
+                    if (!currentBucket) {
+                        var item = {
+                            name:  bucket,
+                            children: [{name: name}],
+                        };
+                        child.children.push(item);
+                    } else {
+                        currentBucket.children.push({name: name});
+                    }
                 }
             }
         });

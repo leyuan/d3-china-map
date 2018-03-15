@@ -2,7 +2,7 @@ var bgColor = 'rgba(46, 39, 51, 0.75)';
 var colors = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57'];
 var maxRestaurantsToDisplay = 10; // 什么鬼名字
 // var categories = ["Japanese", "Chinese", "Canadian", "Thai", "Pizza", "Vegetarian", "Italian", "coffee"];
-var categories = ["Japanese", "Chinese", "Italian"];
+var categories = ["Japanese", "Chinese", "Cafe"];
 var data = [{
     name: '',
     itemStyle: {
@@ -37,25 +37,6 @@ categories.map((cate, i) => {
 
     data[0].children.push(item);
 });
-
-// for (var i = 0; i < categories.length; i++) {
-//     data[0].children.push({
-//         name: "",
-//         itemStyle: {
-//             color: colors[(i % (colors.length))]
-//         },
-//         children: []
-//     });
-//     data[0].children[i].name = categories[i];
-//     for (var j = 0; j < maxRestaurantsToDisplay; j++) {
-//         data[0].children[i].children.push({
-//             name: '☆',
-//             children: [{
-//                 name: ''
-//             }]
-//         });
-//     }
-// }
 
 var dom = document.getElementById("baguazhen");
 var myChart = echarts.init(dom);
@@ -160,9 +141,9 @@ option = {
             }
         }, {
             r0: 20,
-            r: 105
+            r: 100
         }, {
-            r0: 115,
+            r0: 105,
             r: 140,
             itemStyle: {
                 shadowBlur: 2,
@@ -175,8 +156,8 @@ option = {
                 color: colors[0]
             }
         }, {
-            r0: 140,
-            r: 145,
+            r0: 145,
+            r: 165,
             itemStyle: {
                 shadowBlur: 80,
                 shadowColor: colors[0]
