@@ -27544,8 +27544,12 @@ var SunburstView = Chart.extend({
    * @private
    */
   _rootToNode: function (node) {
-    // debugger;
-    window.node = node;
+    // customize node
+    if (node.name !== window.lastNodeName) {
+      window.lastNodeName = node.name;
+      window.node = node;
+    }
+
     if (node !== this.seriesModel.getViewRoot()) {
       this.api.dispatchAction({
         type: ROOT_TO_NODE_ACTION,

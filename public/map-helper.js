@@ -23,34 +23,26 @@ function getLocation() {
     }
 }
 
-function addMarker(marker) {
-    var googleMarker = new google.maps.Marker(marker);
-    markers.push(googleMarker);
+function removeMarkers() {
+    markers.map(marker => {
+        marker.setMap(null);
+    });
 }
 
-function removeMarker(marker) {
-    if(!marker) { // => remove all
-        markers.map(marker => {
-            marker.setMap(null);
-        });
-    }
-}
-
-function showPlaces(node)
-{
-  removeMarker();
-  if (node.name === 'all')
-  {
-    Object.keys(places).map(cate => {
+function showPlaces(node) {
+    if (node.name === 'all') {
+        Object.keys(places).map(cate => {
             places[cate].map(place => {
-                addMarker(place.marker)
+                var googleMarker = new google.maps.Marker(place.marker);
+                markers.push(googleMarker);
             });
         });
     } else if (places.hasOwnProperty(node.name)) { // => node is category
         var cate = node.name;
 
         places[cate].map(place => {
-            addMarker(place.marker)
+            var googleMarker = new google.maps.Marker(place.marker);
+            markers.push(googleMarker);
         });
     } else if (places.hasOwnProperty(node.parentNode.name)) { // => node is rating bucket
         var bucket = node.name;
@@ -74,8 +66,6 @@ function showPlaces(node)
 }
 
 function addMarkerAndNavTo(place) {
-    removeMarker();
-
     var infowindow = new google.maps.InfoWindow();
 
     service.getDetails({

@@ -54,12 +54,20 @@
             name: 'all',
             parentNode: null,
         };
-
+        window.lastNodeName = window.node.name;
+        var isShown = true;
         $(document).keyup(function (e) {
-            if (e.keyCode == 27) { // esc pressed
+            var isEscPressed = e.keyCode == 27;
+
+            if (isEscPressed) {
+
+                if (isShown) {
+                    removeMarkers();
+                    showPlaces(window.node);
+                }
+
                 $("#baguazhen").toggle();
-                console.log(window.node);
-                showPlaces(window.node);
+                isShown = !isShown;
             }
         });
     </script>
