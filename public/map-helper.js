@@ -94,7 +94,7 @@ function addMarkerAndNavTo(place) {
                 $('#panel').empty();
             });
 
-            google.maps.event.addListener(marker, "dbclick", function (e) {
+            google.maps.event.addListener(marker, "dblclick", function (e) {
                 getDirection(place.geometry.location);
                 console.log("Double Clicked??");
             });
