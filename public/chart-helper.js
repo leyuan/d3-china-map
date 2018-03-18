@@ -1,6 +1,6 @@
-var colors = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57'];
 // var categories = ["Japanese", "Chinese", "Canadian", "Thai", "Pizza", "Vegetarian", "Italian", "coffee"];
-var categories = ["Japanese", "Chinese", "Cafe"];
+var colors = ['#FFAE57', '#FF7853', '#EA5151', '#CC3F57'];
+var categories = ["Japanese", "Chinese", "Cafe", "Steak"];
 var data = [{
     name: '',
     itemStyle: {
@@ -10,16 +10,16 @@ var data = [{
 }];
 var itemStyle = {
     star5: {
-        color: colors[0]
+        color: colors[3]
     },
     star4: {
         color: colors[1]
     },
     star3: {
-        color: colors[2]
+        color: colors[0]
     },
     star2: {
-        color: colors[3]
+        color: colors[0]
     }
 };
 
@@ -46,36 +46,30 @@ function updateColor() {
     var category = data[0].children;
     for (var i = 0; i < category.length; ++i) {
         var block = category[i].children;
-        var bookScore = [];
-        var bookScoreId;
+
+        // for restaurant bucket
         for (var star = 0; star < block.length; ++star) {
             var style = (function (name) {
-                name = parseFloat(name.slice(0, 3)); // Extract the numerical part.
                 switch (true) {
-                    case (name >= 4.6):
-                        bookScoreId = 0;
+                    case (name == '4 - 5'):
                         return itemStyle.star5;
-                    case (name < 4.6 && name >= 4.3):
-                        bookScoreId = 1;
+                    case (name == '3 - 4'):
                         return itemStyle.star4;
-                    case (name < 4.3 && name >= 4.0):
-                        bookScoreId = 2;
-                        return itemStyle.star3;
-                    case (name < 4.0):
-                        bookScoreId = 3;
+                    case (name == '3'):
                         return itemStyle.star2;
                     default:
-                        bookScoreId = 0;
-                        return itemStyle.star5;
+                        return itemStyle.star2;
                 }
             })(block[star].name);
 
             block[star].label = {
-                color: style.color,
+                color: '#fff',
                 downplay: {
-                    opacity: 0.5
+                    opacity: 0.8
                 }
             };
+
+            // for each single restaurant
             if (block[star].children) {
                 style = {
                     opacity: 1,
@@ -87,19 +81,6 @@ function updateColor() {
                     book.label = {
                         color: style.color
                     };
-
-                    var value = 1;
-                    if (bookScoreId === 0 || bookScoreId === 3) {
-                        value = 5;
-                    }
-                    if (bookScore[bookScoreId]) {
-                        bookScore[bookScoreId].value += value;
-                    } else {
-                        bookScore[bookScoreId] = {
-                            color: colors[bookScoreId],
-                            value: value
-                        };
-                    }
                 });
             }
         }
@@ -109,7 +90,7 @@ function updateColor() {
     }
 }
 
-var bgColor = 'rgba(46, 39, 51, 0.75)';
+var bgColor = 'rgba(46, 39, 51, 0.85)';
 option = {
     backgroundColor: bgColor,
     color: colors,
@@ -126,7 +107,7 @@ option = {
         },
         label: {
             rotate: 'radial',
-            color: bgColor
+            color: '#fff'
         },
         itemStyle: {
             borderColor: bgColor,
@@ -140,10 +121,10 @@ option = {
             }
         }, {
             r0: 20,
-            r: 100
+            r: 120
         }, {
-            r0: 105,
-            r: 140,
+            r0: 125,
+            r: 150,
             itemStyle: {
                 shadowBlur: 2,
                 shadowColor: colors[2],
@@ -155,8 +136,8 @@ option = {
                 color: colors[0]
             }
         }, {
-            r0: 145,
-            r: 165,
+            r0: 155,
+            r: 175,
             itemStyle: {
                 shadowBlur: 80,
                 shadowColor: colors[0]
@@ -168,7 +149,7 @@ option = {
             },
             downplay: {
                 label: {
-                    opacity: 0.5
+                    opacity: 0.7
                 }
             }
         }]

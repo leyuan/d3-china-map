@@ -4,8 +4,6 @@ var places = {};
 var markers = [];
 var infowindow;
 var currentLocation;
-
-// 0 - 2.9 // 3 - 3.4 // 3.5 - 3.9 // 4 - 4.4 // 4.5 - 4.9 // 5.0 //
 var ratingBuckets = [2.9, 3.4, 3.9, 4.4, 4.9]
 
 google.maps.Map.prototype.clearMarkers = function() {
@@ -74,7 +72,8 @@ function addMarkerAndNavTo(place) {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
             var marker = new google.maps.Marker({
                 map: map,
-                position: place.geometry.location
+                position: place.geometry.location,
+                icon: 'icons/food.png'
             });
 
             markers.push(marker);
@@ -91,7 +90,11 @@ function addMarkerAndNavTo(place) {
                 infowindow.open(map, this);
             });
 
-            google.maps.event.addListener(marker, "dblclick", function (e) {
+            google.maps.event.addListener(infowindow,'closeclick',function(){
+                $('#panel').empty();
+            });
+
+            google.maps.event.addListener(marker, "dbclick", function (e) {
                 getDirection(place.geometry.location);
                 console.log("Double Clicked??");
             });
@@ -128,6 +131,7 @@ function callback(cate, results, status) {
             place.marker = {
                 position: place.geometry.location,
                 map: map,
+                icon: 'icons/food.png'
             };
 
             place.ratingBucket = ratingBucket;
@@ -197,12 +201,11 @@ function initMap(position) {
     // Send search request for each restaurant category.
     for (var i = 0; i < categories.length; i++) {
         var textSearchReq = {
-            location: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+            location: new google.maps.LatLng(location),
             radius: '200',
             query: categories[i],
             type: ['restaurant'],
         };
-
         service = new google.maps.places.PlacesService(map);
         service.textSearch(textSearchReq, callback.bind(this, categories[i]));
     }
