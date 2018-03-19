@@ -11,4 +11,4 @@
 
 ### Notice
 
-This code is no longer forked from d3-china-map.
+This code is no longer forked from d3-china-map, as nothing related is left.
